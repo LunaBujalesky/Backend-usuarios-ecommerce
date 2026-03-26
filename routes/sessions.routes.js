@@ -1,7 +1,21 @@
-router.post("/products", passport.authenticate("current", { session: false }), isAdmin, createProduct);
+import { Router } from "express";
+import passport from "passport";
+import UserDTO from "../dto/UserDTO.js";
+import { register, login, forgotPassword, resetPassword } from "../controllers/sessions.controller.js";
 
-router.post("/carts/:cid/products/:pid",
+const router = Router();
+
+router.post("/register", register);
+router.post("/login", login);
+
+router.get("/current",
     passport.authenticate("current", { session: false }),
-    isUser,
-    addProductToCart
+    (req, res) => {
+        res.send(new UserDTO(req.user));
+    }
 );
+
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password", resetPassword);
+
+export default router;
